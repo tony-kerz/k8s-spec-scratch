@@ -1,0 +1,10 @@
+# https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/kubernetes-helm#preparation
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-casc-config
+data:
+  jenkins.yaml: |
+    jenkins:
+      systemMessage: "CASC Jenkins is cool"

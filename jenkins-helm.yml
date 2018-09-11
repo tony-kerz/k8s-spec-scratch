@@ -1,0 +1,46 @@
+# https://github.com/jenkinsci/configuration-as-code-plugin/tree/master/demos/kubernetes-helm#preparation
+#
+Master:
+  ImageTag: "2.141"
+
+  InitContainerEnv:
+    - name: JENKINS_UC
+      value: https://updates.jenkins.io
+    - name: JENKINS_UC_EXPERIMENTAL
+      value: https://updates.jenkins.io/experimental
+    - name: JENKINS_INCREMENTALS_REPO_MIRROR
+      value: https://repo.jenkins-ci.org/incrementals
+
+  ContainerEnv:
+    - name: JENKINS_UC
+      value: https://updates.jenkins.io
+    - name: JENKINS_UC_EXPERIMENTAL
+      value: https://updates.jenkins.io/experimental
+    - name: JENKINS_INCREMENTALS_REPO_MIRROR
+      value: https://repo.jenkins-ci.org/incrementals
+    # Tell the plugin where to find its config. The '..data'
+    # part is needed for now due to this bug:
+    # https://github.com/jenkinsci/configuration-as-code-plugin/issues/425
+    - name: CASC_JENKINS_CONFIG
+      value: /var/jenkins_home/casc_configs/..data/jenkins.yaml
+
+  # List of plugins to be install during Jenkins master start
+  # mind the last plugin in the list now ;)
+  InstallPlugins:
+    - kubernetes:1.12.6
+    - kubernetes-credentials:0.3.1
+    - workflow-aggregator:2.5
+    - workflow-job:2.25
+    - credentials-binding:1.16
+    - git:3.9.1
+    - github:1.29.2
+    - configuration-as-code:1.0-rc3
+Persistence:
+  volumes:
+  - name: casc-config
+    configMap:
+      name: jenkins-casc-config
+  mounts:
+  - name: casc-config
+    mountPath: /var/jenkins_home/casc_configs
+    readOnly: true
